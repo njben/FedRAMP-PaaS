@@ -126,7 +126,6 @@ The solution uses [Azure Key Vault](https://azure.microsoft.com/services/key-vau
 
 **Application Gateway**
 The architecture reduces the risk of security vulnerabilities using an Application Gateway with Web Application Firewall (WAF), and the OWASP ruleset enabled. Additional capabilities include:
-
 - [End-to-End-SSL](https://docs.microsoft.com/azure/application-gateway/application-gateway-end-to-end-ssl-powershell)
 - Enable [SSL Offload](https://docs.microsoft.com/azure/application-gateway/application-gateway-ssl-portal)
 - Disable [TLS v1.0 and v1.1](https://docs.microsoft.com/azure/application-gateway/application-gateway-end-to-end-ssl-powershell)
@@ -158,14 +157,14 @@ Additionally, the following OMS solutions are included as a part of this archite
 
 ## Threat model
 
-The data flow diagram for this reference architecture is available for [download](**need new link**) or can be found below. This model can help customers understand the points of potential risk in the system infrastructure when making modifications.
+The data flow diagram for this reference architecture is available for [download](https://aka.ms/fedrampPaaSWebAppDFD) or can be found below. This model can help customers understand the points of potential risk in the system infrastructure when making modifications.
 
-![alt text](?raw=true)
+![alt text](https://github.com/njben/FedRAMP-PaaS/blob/master/Azure%20Security%20and%20Compliance%20Blueprint%20-%20FedRAMP%20PaaS%20WebApp%20Threat%20Model.png?raw=true)
 
 ## Compliance documentation
 The [Azure Security and Compliance Blueprint - FedRAMP High Customer Responsibility Matrix](https://aka.ms/blueprinthighcrm) lists all security controls required by the FedRAMP High baseline. The matrix denotes whether the implementation of each control is the responsibility of Microsoft, the customer, or shared between the two.
 
-The [Azure Security and Compliance Blueprint - FedRAMP PaaS WebApp High Control Implementation Matrix](**need link here**) lists all security controls required by the FedRAMP High baseline. The matrix provides information on which controls are covered by the PaaS web application architecture, including detailed descriptions of how the implementation meets the requirements of each covered control.
+The [Azure Security and Compliance Blueprint - FedRAMP PaaS WebApp High Control Implementation Matrix](https://aka.ms/fedrampPaaSWebAppCIM) lists all security controls required by the FedRAMP High baseline. The matrix provides information on which controls are covered by the PaaS web application architecture, including detailed descriptions of how the implementation meets the requirements of each covered control.
 
 ## Guidance and recommendations
 ### VPN and ExpressRoute
