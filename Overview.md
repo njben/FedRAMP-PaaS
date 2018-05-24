@@ -13,7 +13,7 @@ This reference architecture, associated control implementation guides, and threa
 ## Architecture diagram and components
 This solution provides a reference architecture for a PaaS web application with an Azure SQL Database backend. The web application is hosted in an isolated Azure App Service Environment, which is a private, dedicated environment in an Azure datacenter. The environment load balances traffic for the web application across VMs managed by Azure. This architecture also includes network security groups, an Application Gateway, Azure DNS, and Load Balancer. Furthermore, Operations Management Suite (OMS) provides real-time analytics of system health and security. **Azure recommends configuring a VPN or ExpressRoute connection for management and data import into the reference architecture subnet.**
 
-![alt text](https://github.com/njben/FedRAMP-PaaS/blob/master/Azure%20Security%20and%20Compliance%20Blueprint%20-%20FedRAMP%20PaaS%20WebApp%20Reference%20Architecture.png?raw=true)
+![Reference Architecture](https://github.com/njben/FedRAMP-PaaS/blob/master/Azure%20Security%20and%20Compliance%20Blueprint%20-%20FedRAMP%20PaaS%20WebApp%20Reference%20Architecture.png?raw=true)
 
 This solution uses the following Azure services. Details of the deployment architecture are located in the [deployment architecture](#deployment-architecture) section.
 
@@ -40,10 +40,10 @@ This solution uses the following Azure services. Details of the deployment archi
 The following section details the deployment and implementation elements.
 
 **Azure Resource Manager**:
-[Azure Resource Manager](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-overview) enables customers to work with the resources in the solution as a group. Customers can deploy, update, or delete all the resources for the solution in a single, coordinated operation. Customers use a template for deployment and that template can work for different environments such as testing, staging, and production. Resource Manager provides security, auditing, and tagging features to help customers manage their resources after deployment.
+[Azure Resource Manager](https://docs.microsoft.com/azure/azure-resource-manager/resource-group-overview) enables customers to work with the resources in the solution as a group. Customers can deploy, update, or delete all the resources for the solution in a single, coordinated operation. Customers use a template for deployment and that template can work for different environments such as testing, staging, and production. Resource Manager provides security, auditing, and tagging features to help customers manage their resources after deployment.
 
 **App Service Environment v2**:
-The [Azure App Service Environment (ASE)](https://docs.microsoft.com/en-us/azure/app-service/environment/intro) is an App Service feature that provides a fully isolated and dedicated environment for securely running App Service applications at a high scale.
+The [Azure App Service Environment (ASE)](https://docs.microsoft.com/azure/app-service/environment/intro) is an App Service feature that provides a fully isolated and dedicated environment for securely running App Service applications at a high scale.
 
 ASEs are isolated to only run a single customer's applications and are always deployed into a virtual network. Customers have fine-grained control over both inbound and outbound application network traffic, and applications can establish high-speed secure connections over virtual networks to on-premises corporate resources.
 
@@ -51,43 +51,42 @@ Use of ASEs for this architecture are allowed for the following controls/configu
 
 - Host inside a secured Azure Virtual Network and network security rules
 - ASE configured with self-signed ILB certificate for HTTPS communication
-- [Internal Load Balancing mode](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-environment-with-internal-load-balancer) (mode 3)
-- Disable [TLS 1.0](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-app-service-environment-custom-settings)
-- Change [TLS Cipher](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-app-service-environment-custom-settings)
-- Control [inbound traffic N/W ports](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-app-service-environment-control-inbound-traffic)
-- [WAF – Restrict Data](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-app-service-environment-web-application-firewall)
-- Allow [Azure SQL Database traffic](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-app-service-environment-network-architecture-overview)
+- [Internal Load Balancing mode](https://docs.microsoft.com/azure/app-service-web/app-service-environment-with-internal-load-balancer) (mode 3)
+- Disable [TLS 1.0](https://docs.microsoft.com/azure/app-service-web/app-service-app-service-environment-custom-settings)
+- Change [TLS Cipher](https://docs.microsoft.com/azure/app-service-web/app-service-app-service-environment-custom-settings)
+- Control [inbound traffic N/W ports](https://docs.microsoft.com/azure/app-service-web/app-service-app-service-environment-control-inbound-traffic)
+- [Web Application Firewall – Restrict Data](https://docs.microsoft.com/azure/app-service-web/app-service-app-service-environment-web-application-firewall)
+- Allow [Azure SQL Database traffic](https://docs.microsoft.com/azure/app-service-web/app-service-app-service-environment-network-architecture-overview)
 
 The [Guidance and recommendations](#guidance-and-recommendations) section contains additional information about ASEs.
 
 **Azure Web App**:
-[Azure Web Apps](https://docs.microsoft.com/en-us/azure/app-service/) enables customers to build and host web applications in the programming language of their choice without managing infrastructure. It offers auto-scaling and high availability, supports both Windows and Linux, and enables automated deployments from GitHub, Visual Studio Team Services, or any Git repo.
+[Azure Web Apps](https://docs.microsoft.com/azure/app-service/) enables customers to build and host web applications in the programming language of their choice without managing infrastructure. It offers auto-scaling and high availability, supports both Windows and Linux, and enables automated deployments from GitHub, Visual Studio Team Services, or any Git repo.
 
 ### Virtual Network
-The architecture defines a private VNet with an address space of 10.200.0.0/16.
+The architecture defines a private virtual network with an address space of 10.200.0.0/16.
 
-**Network security groups**: [NSGs](https://docs.microsoft.com/azure/virtual-network/virtual-networks-nsg) contain Access Control Lists (ACLs) that allow or deny traffic within a VNet. NSGs can be used to secure traffic at a subnet or individual VM level. The following NSGs exist:
+**Network security groups**: [Network security groups (NSGs)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-nsg) contain access control lists that allow or deny traffic within a virtual network. NSGs can be used to secure traffic at a subnet or individual VM level. The following NSGs exist:
 - 1 NSG for Application Gateway
 - 1 NSG for App Service Environment
 - 1 NSG for Azure SQL Database
 
 Each of the NSGs have specific ports and protocols open so that the solution can work securely and correctly. In addition, the following configurations are enabled for each NSG:
-  -	[Diagnostic logs and events](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-nsg-manage-log) are enabled and stored in a storage account
+  -	[Diagnostic logs and events](https://docs.microsoft.com/azure/virtual-network/virtual-network-nsg-manage-log) are enabled and stored in a storage account
   -	OMS Log Analytics is connected to the [NSG's diagnostics](https://github.com/krnese/AzureDeploy/blob/master/AzureMgmt/AzureMonitor/nsgWithDiagnostics.json)
 
 **Subnets**: Each subnet is associated with its corresponding NSG.
 
 **Azure DNS**:
-The Domain Name System, or DNS, is responsible for translating (or resolving) a website or service name to its IP address. [Azure DNS](https://docs.microsoft.com/en-us/azure/dns/dns-overview) is a hosting service for DNS domains that provides name resolution using Azure infrastructure. By hosting domains in Azure, users can manage DNS records using the same credentials, APIs, tools, and billing as other Azure services. Azure DNS also supports private DNS domains.
+The Domain Name System, or DNS, is responsible for translating (or resolving) a website or service name to its IP address. [Azure DNS](https://docs.microsoft.com/azure/dns/dns-overview) is a hosting service for DNS domains that provides name resolution using Azure infrastructure. By hosting domains in Azure, users can manage DNS records using the same credentials, APIs, tools, and billing as other Azure services. Azure DNS also supports private DNS domains.
 
 **Azure Load Balancer**:
-[Azure Load Balancer](https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-overview) allows customers to scale their applications and create high availability for services. Load Balancer supports inbound as well as outbound scenarios, and provides low latency, high throughput, and scales up to millions of flows for all TCP and UDP applications.
+[Azure Load Balancer](https://docs.microsoft.com/azure/load-balancer/load-balancer-overview) allows customers to scale their applications and create high availability for services. Load Balancer supports inbound as well as outbound scenarios, and provides low latency, high throughput, and scales up to millions of flows for all TCP and UDP applications.
 
 ### Data in transit
 Azure encrypts all communications to and from Azure datacenters by default. All transactions to Azure Storage through the Azure portal occur via HTTPS.
 
 ### Data at rest
-
 The architecture protects data at rest through encryption, database auditing, and other measures.
 
 **Azure Storage**:
@@ -133,9 +132,9 @@ The architecture reduces the risk of security vulnerabilities using an Applicati
 - Disable [TLS v1.0 and v1.1](https://docs.microsoft.com/azure/application-gateway/application-gateway-end-to-end-ssl-powershell)
 - [Web Application Firewall](https://docs.microsoft.com/azure/application-gateway/application-gateway-web-application-firewall-overview) (WAF mode)
 - [Prevention mode](https://docs.microsoft.com/azure/application-gateway/application-gateway-web-application-firewall-portal) with OWASP 3.0 ruleset
-- Enable [diagnostics logging](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-diagnostics)
-- [Custom health probes](https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-create-gateway-portal)
-- [Azure Security Center](https://azure.microsoft.com/services/security-center) and [Azure Advisor](https://docs.microsoft.com/en-us/azure/advisor/advisor-security-recommendations) provide additional protection and notifications. Azure Security Center also provides a reputation system.
+- Enable [diagnostics logging](https://docs.microsoft.com/azure/application-gateway/application-gateway-diagnostics)
+- [Custom health probes](https://docs.microsoft.com/azure/application-gateway/application-gateway-create-gateway-portal)
+- [Azure Security Center](https://azure.microsoft.com/services/security-center) and [Azure Advisor](https://docs.microsoft.com/azure/advisor/advisor-security-recommendations) provide additional protection and notifications. Azure Security Center also provides a reputation system.
 
 ### Logging and auditing
 OMS provides extensive logging of system and user activity, as well as system health. The OMS [Log Analytics](https://azure.microsoft.com/services/log-analytics/) solution collects and analyzes data generated by resources in Azure and on-premises environments.
@@ -152,16 +151,16 @@ Additionally, the following OMS solutions are included as a part of this archite
 -	[Update Management](https://docs.microsoft.com/azure/operations-management-suite/oms-solution-update-management): The Update Management solution allows customer management of operating system security updates, including a status of available updates and the process of installing required updates.
 -	[Agent Health](https://docs.microsoft.com/azure/operations-management-suite/oms-solution-agenthealth): The Agent Health solution reports how many agents are deployed and their geographic distribution, as well as how many agents which are unresponsive and the number of agents which are submitting operational data.
 -	[Azure Activity Logs](https://docs.microsoft.com/azure/log-analytics/log-analytics-activity): The Activity Log Analytics solution assists with analysis of the Azure activity logs across all Azure subscriptions for a customer.
--	[Change Tracking](https://docs.microsoft.com/en-us/azure/automation/automation-change-tracking): The Change Tracking solution allows customers to easily identify changes in the environment.
+-	[Change Tracking](https://docs.microsoft.com/azure/automation/automation-change-tracking): The Change Tracking solution allows customers to easily identify changes in the environment.
 
 **Azure Monitor**
-[Azure Monitor](https://docs.microsoft.com/en-us/azure/monitoring-and-diagnostics/) helps users track performance, maintain security, and identify trends by enabling organizations to audit, create alerts, and archive data, including tracking API calls in customers' Azure resources.
+[Azure Monitor](https://docs.microsoft.com/azure/monitoring-and-diagnostics/) helps users track performance, maintain security, and identify trends by enabling organizations to audit, create alerts, and archive data, including tracking API calls in customers' Azure resources.
 
 ## Threat model
 
 The data flow diagram for this reference architecture is available for [download](https://aka.ms/fedrampPaaSWebAppDFD) or can be found below. This model can help customers understand the points of potential risk in the system infrastructure when making modifications.
 
-![alt text](https://github.com/njben/FedRAMP-PaaS/blob/master/Azure%20Security%20and%20Compliance%20Blueprint%20-%20FedRAMP%20PaaS%20WebApp%20Threat%20Model.png?raw=true)
+![Threat Model](https://github.com/njben/FedRAMP-PaaS/blob/master/Azure%20Security%20and%20Compliance%20Blueprint%20-%20FedRAMP%20PaaS%20WebApp%20Threat%20Model.png?raw=true)
 
 ## Compliance documentation
 The [Azure Security and Compliance Blueprint - FedRAMP High Customer Responsibility Matrix](https://aka.ms/blueprinthighcrm) lists all security controls required by the FedRAMP High baseline. The matrix denotes whether the implementation of each control is the responsibility of Microsoft, the customer, or shared between the two.
@@ -172,23 +171,11 @@ The [Azure Security and Compliance Blueprint - FedRAMP PaaS WebApp High Control 
 ### VPN and ExpressRoute
 A secure VPN tunnel or [ExpressRoute](https://docs.microsoft.com/azure/expressroute/expressroute-introduction) needs to be configured to securely establish a connection to the resources deployed as a part of this PaaS web application reference architecture. By appropriately setting up a VPN or ExpressRoute, customers can add a layer of protection for data in transit.
 
-By implementing a secure VPN tunnel with Azure, a virtual private connection between an on-premises network and an Azure Virtual Network can be created. This connection takes place over the Internet and allows customers to securely “tunnel” information inside an encrypted link between the customer's network and Azure. Site-to-Site VPN is a secure, mature technology that has been deployed by enterprises of all sizes for decades. The [IPsec tunnel mode](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc786385(v=ws.10)) is used in this option as an encryption mechanism.
+By implementing a secure VPN tunnel with Azure, a VPN connection between an on-premises network and an Azure Virtual Network can be created. This connection takes place over the Internet and allows customers to securely “tunnel” information inside an encrypted link between the customer's network and Azure. Site-to-Site VPN is a secure, mature technology that has been deployed by enterprises of all sizes for decades. The [IPsec tunnel mode](https://docs.microsoft.com/previous-versions/windows/it-pro/windows-server-2003/cc786385(v=ws.10)) is used in this option as an encryption mechanism.
 
 Because traffic within the VPN tunnel does traverse the Internet with a site-to-site VPN, Microsoft offers another, even more secure connection option. Azure ExpressRoute is a dedicated WAN link between Azure and an on-premises location or an Exchange hosting provider. As ExpressRoute connections do not go over the Internet, these connections offer more reliability, faster speeds, lower latencies, and higher security than typical connections over the Internet. Furthermore, because this is a direct connection of customer's telecommunication provider, the data does not travel over the Internet and therefore is not exposed to it.
 
-Best practices for implementing a secure hybrid network that extends an on-premises network to Azure are [available](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/dmz/secure-vnet-hybrid).
-
-### Azure App Service Environment
-The use of ASEs can significantly decrease the customer burden of configuring infrastructure that securely hosts customer assets in a FedRAMP compliant manner. ASEs offer the following benefits that would otherwise require a customer created solution:
-
-- Scalability
-  - ASEs offer the option for configuring "autoscale" based on load metrics, available budget, or a defined schedule.
-- App environment isolation
-  - ASE assets are fully isolated and offer dedicated compute specific to the application that will be deployed into an ASE.
-- Outbound traffic control
-  - If an outbound static IP address is required for the app service, ASEs provide an outbound traffic control solution compliant with FedRAMP.
-
-If electing to forego an App Service Environment, a FedRAMP compliant solution will require more hands-on configuration by the customer. As payment processing works with sensitive data assets, engineering a solution without ASEs greatly increases the customer burden for maintaining the environment. ASE as a PaaS offering eases the burden of maintaining the environment and ensures assets are secured.
+Best practices for implementing a secure hybrid network that extends an on-premises network to Azure are [available](https://docs.microsoft.com/azure/architecture/reference-architectures/dmz/secure-vnet-hybrid).
 
 ## Disclaimer
 
